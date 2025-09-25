@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: notification_service
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USER: your@gmail.com
+      SMTP_PASS: app_password
+      SMTP_USE_TLS: "true"
+      TWILIO_SID: ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      TWILIO_TOKEN: your_twilio_auth_token
+      TWILIO_FROM: +15550001111
+      TELEGRAM_BOT_TOKEN: 123456:ABC-DEF1234...
+      DATABASE_URL: sqlite:////app/data/notifications.db
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
